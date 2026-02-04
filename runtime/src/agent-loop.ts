@@ -75,12 +75,8 @@ export class AgentLoop {
       }
       
       // 7. Store important information
-      if (response.shouldStore && response.memoryContent) {
-        await this.bot.memory.store(response.memoryContent, {
-          type: response.memoryType || 'factual',
-          importance: response.importance || 0.5,
-        });
-      }
+      // TODO: Fix Engram MCP startup issue
+      console.log('[Agent] Skipping memory store (Engram not available)');
       
       // 8. Return output
       const responseTime = Date.now() - startTime;
@@ -113,16 +109,10 @@ export class AgentLoop {
    * Recall relevant memories
    */
   private async recallMemories(query: string): Promise<any[]> {
-    try {
-      const results = await this.bot.memory.recall(query, {
-        limit: 5,
-        minConfidence: 0.3,
-      });
-      return results;
-    } catch (error) {
-      console.warn('Memory recall failed:', error);
-      return [];
-    }
+    // TODO: Fix Engram MCP startup issue
+    // For now, skip memory recall to test other features
+    console.log('[Agent] Skipping memory recall (Engram not available)');
+    return [];
   }
   
   /**

@@ -8,6 +8,7 @@
 import { createBot } from 'botcore';
 import { AgentLoop } from './agent-loop.js';
 import { AnthropicProvider } from './llm/anthropic.js';
+import { MockProvider } from './llm/mock.js';
 import { createHttpChannel } from './channels/http.js';
 import * as dotenv from 'dotenv';
 
@@ -21,11 +22,7 @@ async function main() {
   const workspace = process.env.BOTCORE_WORKSPACE || process.cwd();
   const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
   const httpPort = parseInt(process.env.HTTP_PORT || '3000');
-  
-  if (!anthropicApiKey) {
-    console.error('❌ ANTHROPIC_API_KEY environment variable is required');
-    process.exit(1);
-  }
+  const useMock = process.env.USE_MOCK_LLM === 'true' || !anthropicApiKey;
   
   console.log(`📁 Workspace: ${workspace}`);
   
@@ -53,8 +50,14 @@ async function main() {
   console.log();
   
   // 3. Initialize LLM provider
-  const llmProvider = new AnthropicProvider(anthropicApiKey);
-  console.log('🧠 LLM Provider: Anthropic (Claude 3.5 Sonnet)\n');
+  let llmProvider;
+  if (useMock) {
+    llmProvider = new MockProvider();
+    console.log('🧠 LLM Provider: Mock (for testing without API key)\n');
+  } else {
+    llmProvider = new AnthropicProvider(anthropicApiKey!);
+    console.log('🧠 LLM Provider: Anthropic (Claude 3.5 Sonnet)\n');
+  }
   
   // 4. Create agent loop
   const agentLoop = new AgentLoop({
