@@ -1,0 +1,13 @@
+domain: test-bot
+nodes:
+  - id: feat-testing
+    type: Feature
+    name: Test Runtime Features
+    description: Verify BotCoreBot runtime works correctly
+    status: in_progress
+    tasks:
+      - "[ ] Test message handling"
+      - "[ ] Test memory recall"
+      - "[ ] Test file operations"
+      - "[ ] Test GID tracking"
+edges: []
