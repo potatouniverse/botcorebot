@@ -6,9 +6,15 @@
 
 ## Vision
 
-**A cloud-hosted bot platform with portability at its core.**
+**A bot platform and memory upgrade service.**
 
-Not just "Clawdbot in the cloud" — a new kind of bot platform where every bot is built on BotCore, making them portable, API-first, and ready for both personal use and marketplace integration.
+Not just "create new bots" — a platform where you can:
+1. **Create bots** — One-click deployment with BotCore
+2. **Upgrade existing bots** — Add Engram memory as a plugin
+3. **Sync across platforms** — Cloud-hosted memory for any bot
+4. **Export/Import BotCore** — Portable bot packages
+
+**Think of it as "Memory-as-a-Service" + "Bot Hosting" + "Portability Layer"**
 
 ## Problem Statement
 
@@ -162,7 +168,7 @@ Not just "Clawdbot in the cloud" — a new kind of bot platform where every bot 
 
 ## User Flows
 
-### 1. Create a Bot
+### 1. Create a New Bot
 
 1. User signs up (Supabase Auth)
 2. Click "Create Bot"
@@ -177,6 +183,104 @@ Not just "Clawdbot in the cloud" — a new kind of bot platform where every bot 
    - Spawns runtime container (Railway)
    - Provisions Telegram bot (optional)
 7. Bot URL ready: `https://my-bot.botcorebot.com`
+
+---
+
+### 2. Upgrade an Existing Bot (NEW!)
+
+**Scenario:** User has a bot running elsewhere (ChatGPT, custom code, etc.) and wants to add Engram memory.
+
+**Flow:**
+
+1. User clicks "Upgrade Existing Bot"
+2. Choose integration method:
+   - **HTTP API Plugin** (most common)
+   - **MCP Server** (for Claude Desktop, Cursor)
+   - **Custom Integration** (webhook/SDK)
+
+3. **For HTTP API Plugin:**
+   ```typescript
+   // User adds to their bot code:
+   import { MemoryClient } from '@botcorebot/client';
+   
+   const memory = new MemoryClient({
+     apiKey: 'your-api-key',
+     botId: 'your-bot-id'
+   });
+   
+   // Before answering:
+   const context = await memory.recall(userMessage);
+   
+   // After answering:
+   await memory.store(importantInfo);
+   ```
+
+4. Dashboard shows:
+   - Memory usage stats
+   - Recent recalls/stores
+   - Memory browser (browse Engram DB)
+   - Export button
+
+5. User can later:
+   - Export BotCore package
+   - Migrate to full hosted bot
+   - Sync across multiple bots
+
+**Pricing for Upgrade:**
+- Free: 10k recalls/month
+- Pro: 100k recalls/month ($10/mo)
+- Enterprise: Unlimited
+
+---
+
+### 3. Cloud Sync (Cross-Platform Memory)
+
+**Scenario:** User has multiple bots (ChatGPT, Claude Desktop, Clawdbot) and wants them to share memory.
+
+**Flow:**
+
+1. User creates "Memory Instance" on BotCoreBot
+2. Gets API endpoint: `https://memory-abc123.botcorebot.com`
+3. Configures each bot:
+
+**ChatGPT (Custom Instructions):**
+```
+Before answering, recall context:
+[Use Code Interpreter to call: https://memory-abc123.botcorebot.com/recall?q=...]
+
+After answering, store important info:
+[POST https://memory-abc123.botcorebot.com/store]
+```
+
+**Claude Desktop (MCP):**
+```json
+{
+  "mcpServers": {
+    "botcorebot-memory": {
+      "command": "npx",
+      "args": ["@botcorebot/mcp-client"],
+      "env": {
+        "BOTCOREBOT_API_KEY": "your-key",
+        "MEMORY_ID": "abc123"
+      }
+    }
+  }
+}
+```
+
+**Clawdbot (Skill):**
+```bash
+# Install skill
+clawdbot skills install botcorebot-memory
+
+# Configure
+BOTCOREBOT_API_KEY=your-key
+MEMORY_ID=abc123
+```
+
+**Result:** All bots share the same Engram memory. What ChatGPT learns, Claude knows too.
+
+---
 
 ### 2. Chat with Bot
 
@@ -275,27 +379,89 @@ CMD ["node", "runtime/index.js"]
 
 ## Pricing
 
-### Free Tier
-- 1 bot
+### Option 1: Full Hosted Bots
+
+**Free Tier**
+- 1 hosted bot
 - 100k tokens/month
 - HTTP API only
 - 7-day memory retention
 - 100MB storage
 
-### Pro Tier ($15/month)
-- 5 bots
+**Pro Tier ($15/month)**
+- 5 hosted bots
 - 1M tokens/month
 - All channels (Telegram, HTTP)
 - Unlimited memory retention
 - 1GB storage
 - Priority support
 
-### Enterprise (Custom)
+**Enterprise (Custom)**
 - Unlimited bots
 - Custom token limits
 - White-label option
 - Dedicated infrastructure
 - SLA
+
+---
+
+### Option 2: Memory Upgrade (for Existing Bots)
+
+**Free Tier**
+- 1 memory instance
+- 10k recalls/month
+- 1k stores/month
+- 7-day retention
+- HTTP API only
+
+**Pro Tier ($10/month)**
+- 3 memory instances
+- 100k recalls/month
+- 10k stores/month
+- Unlimited retention
+- HTTP API + MCP Server
+- Cross-platform sync
+
+**Enterprise (Custom)**
+- Unlimited memory instances
+- Unlimited operations
+- Dedicated infrastructure
+- Custom integrations
+
+---
+
+### Option 3: Cloud Sync Only (Cross-Platform Memory)
+
+**Pro Tier ($8/month)**
+- 1 shared memory instance
+- 50k recalls/month
+- Sync across unlimited bots
+- HTTP API + MCP Server
+- Memory browser UI
+- Export anytime
+
+**Enterprise (Custom)**
+- Multiple memory instances
+- Unlimited operations
+- Team collaboration
+- Audit logs
+
+---
+
+### Bundled Pricing
+
+**Developer Bundle ($20/month)**
+- 3 hosted bots
+- 2 memory upgrades
+- 1 shared memory instance
+- All Pro features
+
+**Team Bundle ($50/month)**
+- 10 hosted bots
+- 5 memory upgrades
+- 3 shared memory instances
+- Team collaboration
+- Shared billing
 
 ---
 
