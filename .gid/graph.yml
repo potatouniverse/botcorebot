@@ -80,6 +80,35 @@ nodes:
       - "[ ] Payment handling"
       - "[ ] Dashboard integration"
       
+  feat-memory-upgrade:
+    type: Feature
+    layer: application
+    status: in_progress
+    priority: core
+    name: "Memory Upgrade Service"
+    description: "Add Engram memory to existing bots (ChatGPT, custom, etc.) via HTTP API or MCP"
+    tasks:
+      - "[x] Design Memory API (recall, store, consolidate)"
+      - "[ ] HTTP client SDK (@botcorebot/client)"
+      - "[ ] MCP client SDK (@botcorebot/mcp-client)"
+      - "[ ] Dashboard: memory browser UI"
+      - "[ ] Usage tracking + billing"
+      - "[ ] Integration examples (ChatGPT, Claude, Clawdbot)"
+      
+  feat-cloud-sync:
+    type: Feature
+    layer: application
+    status: draft
+    priority: supporting
+    name: "Cross-Platform Memory Sync"
+    description: "Shared memory instance that syncs across multiple bots/platforms"
+    tasks:
+      - "[ ] Shared memory instance creation"
+      - "[ ] Multi-bot API key management"
+      - "[ ] Conflict resolution (last-write-wins or merge)"
+      - "[ ] Real-time sync (WebSocket optional)"
+      - "[ ] Audit log (who stored what)"
+      
   # Components
   comp-user-auth:
     type: Component
@@ -129,25 +158,51 @@ nodes:
     name: "Billing System"
     description: "Stripe integration for subscriptions"
     
+  comp-memory-api:
+    type: Component
+    layer: interface
+    status: active
+    priority: core
+    name: "Memory HTTP API"
+    description: "RESTful API for recall/store/consolidate operations"
+    tasks:
+      - "[x] OpenAPI spec"
+      - "[x] Rate limiting"
+      - "[x] Authentication (API keys)"
+      - "[x] Usage metering"
+      
+  comp-client-sdk:
+    type: Component
+    layer: interface
+    status: draft
+    priority: core
+    name: "Client SDKs"
+    description: "TypeScript/Python SDKs for Memory API"
+    tasks:
+      - "[ ] @botcorebot/client (TypeScript)"
+      - "[ ] @botcorebot/mcp-client (MCP wrapper)"
+      - "[ ] botcorebot-python (Python)"
+      - "[ ] Example integrations"
+      
   # Database
   schema-database:
     type: Data
     layer: infrastructure
-    status: draft
+    status: in_progress
     priority: core
     name: "Database Schema"
     description: "PostgreSQL schema for users, bots, config, usage"
     tasks:
-      - "[ ] Define Supabase tables"
-      - "[ ] Create migrations"
-      - "[ ] Set up RLS policies"
-      - "[ ] Add indexes"
+      - "[x] Define Supabase tables"
+      - "[x] Create migrations"
+      - "[x] Set up RLS policies"
+      - "[x] Add indexes"
       
   # Documentation
   doc-api:
     type: File
     layer: interface
-    status: draft
+    status: active
     priority: supporting
     name: "API Documentation"
     description: "OpenAPI spec for bot runtime HTTP API"
@@ -196,64 +251,7 @@ edges:
   - from: comp-billing
     to: schema-database
     relation: depends_on
-  
-  # New Features (Based on Updated Vision)
-  feat-memory-upgrade:
-    type: Feature
-    layer: application
-    status: draft
-    priority: core
-    name: "Memory Upgrade Service"
-    description: "Add Engram memory to existing bots (ChatGPT, custom, etc.) via HTTP API or MCP"
-    tasks:
-      - "[ ] Design Memory API (recall, store, consolidate)"
-      - "[ ] HTTP client SDK (@botcorebot/client)"
-      - "[ ] MCP client SDK (@botcorebot/mcp-client)"
-      - "[ ] Dashboard: memory browser UI"
-      - "[ ] Usage tracking + billing"
-      - "[ ] Integration examples (ChatGPT, Claude, Clawdbot)"
-      
-  feat-cloud-sync:
-    type: Feature
-    layer: application
-    status: draft
-    priority: supporting
-    name: "Cross-Platform Memory Sync"
-    description: "Shared memory instance that syncs across multiple bots/platforms"
-    tasks:
-      - "[ ] Shared memory instance creation"
-      - "[ ] Multi-bot API key management"
-      - "[ ] Conflict resolution (last-write-wins or merge)"
-      - "[ ] Real-time sync (WebSocket optional)"
-      - "[ ] Audit log (who stored what)"
-      
-  comp-memory-api:
-    type: Component
-    layer: interface
-    status: draft
-    priority: core
-    name: "Memory HTTP API"
-    description: "RESTful API for recall/store/consolidate operations"
-    tasks:
-      - "[ ] OpenAPI spec"
-      - "[ ] Rate limiting"
-      - "[ ] Authentication (API keys)"
-      - "[ ] Usage metering"
-      
-  comp-client-sdk:
-    type: Component
-    layer: interface
-    status: draft
-    priority: core
-    name: "Client SDKs"
-    description: "TypeScript/Python SDKs for Memory API"
-    tasks:
-      - "[ ] @botcorebot/client (TypeScript)"
-      - "[ ] @botcorebot/mcp-client (MCP wrapper)"
-      - "[ ] botcorebot-python (Python)"
-      - "[ ] Example integrations"
-
-  # Additional edges
+    
   - from: feat-memory-upgrade
     to: comp-memory-api
     relation: depends_on
@@ -268,4 +266,8 @@ edges:
     
   - from: comp-client-sdk
     to: comp-memory-api
+    relation: depends_on
+    
+  - from: comp-memory-api
+    to: schema-database
     relation: depends_on

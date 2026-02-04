@@ -1,11 +1,47 @@
+# Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Build
 .next/
-dist/
+out/
 build/
-*.log
+dist/
+
+# Testing
+coverage/
+
+# Environment
 .env
 .env.local
+.env.*.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Memory storage (local dev)
+/tmp/
 *.db
-.vercel
-.railway
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Vercel
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
