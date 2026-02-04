@@ -1,0 +1,27 @@
+{
+  "name": "botcorebot",
+  "version": "0.1.0",
+  "description": "Portable cloud bot platform powered by BotCore",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "ai",
+    "bot",
+    "cloud",
+    "portable",
+    "botcore"
+  ],
+  "author": "potato",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/potatouniverse/botcorebot.git"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

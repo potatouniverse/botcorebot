@@ -1,0 +1,198 @@
+domain: botcorebot
+version: "1.0"
+metadata:
+  created: "2026-02-04"
+  description: "Portable cloud bot platform powered by BotCore"
+  
+nodes:
+  # Core Features
+  feat-botcore-integration:
+    type: Feature
+    layer: domain
+    status: draft
+    priority: core
+    name: "BotCore Integration"
+    description: "Integrate BotCore SDK as the foundation. Every bot has Memory, Identity, Skills."
+    tasks:
+      - "[ ] Add BotCore as dependency"
+      - "[ ] Create bot package manager (load/save BotCore packages)"
+      - "[ ] Implement export/import API"
+      - "[ ] Test with example bot"
+      
+  feat-bot-runtime:
+    type: Feature
+    layer: application
+    status: draft
+    priority: core
+    name: "Bot Runtime"
+    description: "Lightweight agent loop: input → recall → LLM → tools → store → output"
+    tasks:
+      - "[ ] Design runtime API"
+      - "[ ] Implement agent loop"
+      - "[ ] Add LLM integration (Anthropic/OpenAI)"
+      - "[ ] Tool execution framework"
+      - "[ ] HTTP API endpoint"
+      - "[ ] Telegram channel support"
+      - "[ ] Write tests"
+      
+  feat-dashboard:
+    type: Feature
+    layer: interface
+    status: draft
+    priority: core
+    name: "Dashboard UI"
+    description: "Web dashboard for bot creation, management, chat, export/import"
+    tasks:
+      - "[ ] Next.js project setup"
+      - "[ ] Supabase auth integration"
+      - "[ ] Bot creation wizard"
+      - "[ ] Memory browser UI"
+      - "[ ] Chat widget"
+      - "[ ] Export/import buttons"
+      - "[ ] Settings panel"
+      
+  feat-deployment:
+    type: Feature
+    layer: infrastructure
+    status: draft
+    priority: core
+    name: "Bot Deployment"
+    description: "Automated deployment to Railway/Fly.io per bot"
+    tasks:
+      - "[ ] Dockerfile for bot runtime"
+      - "[ ] Railway API integration"
+      - "[ ] Environment variable management"
+      - "[ ] Health checks + monitoring"
+      - "[ ] Auto-scaling config"
+      - "[ ] Persistent storage (Engram DB)"
+      
+  feat-marketplace:
+    type: Feature
+    layer: application
+    status: draft
+    priority: supporting
+    name: "Marketplace Integration"
+    description: "Connect bots to Suited Bot marketplace"
+    tasks:
+      - "[ ] Webhook receiver for task notifications"
+      - "[ ] Task acceptance flow"
+      - "[ ] Work submission API"
+      - "[ ] Payment handling"
+      - "[ ] Dashboard integration"
+      
+  # Components
+  comp-user-auth:
+    type: Component
+    layer: application
+    status: draft
+    priority: core
+    name: "User Authentication"
+    description: "Supabase Auth for user signup/login"
+    
+  comp-bot-manager:
+    type: Component
+    layer: application
+    status: draft
+    priority: core
+    name: "Bot Manager"
+    description: "CRUD for bots, config, status management"
+    
+  comp-runtime-core:
+    type: Component
+    layer: application
+    status: draft
+    priority: core
+    name: "Runtime Core"
+    description: "Minimal agent loop implementation"
+    
+  comp-llm-client:
+    type: Component
+    layer: infrastructure
+    status: draft
+    priority: core
+    name: "LLM Client"
+    description: "Abstraction over Anthropic/OpenAI APIs with tool support"
+    
+  comp-deployment-manager:
+    type: Component
+    layer: infrastructure
+    status: draft
+    priority: core
+    name: "Deployment Manager"
+    description: "Handles Railway API calls, container lifecycle"
+    
+  comp-billing:
+    type: Component
+    layer: application
+    status: draft
+    priority: supporting
+    name: "Billing System"
+    description: "Stripe integration for subscriptions"
+    
+  # Database
+  schema-database:
+    type: Data
+    layer: infrastructure
+    status: draft
+    priority: core
+    name: "Database Schema"
+    description: "PostgreSQL schema for users, bots, config, usage"
+    tasks:
+      - "[ ] Define Supabase tables"
+      - "[ ] Create migrations"
+      - "[ ] Set up RLS policies"
+      - "[ ] Add indexes"
+      
+  # Documentation
+  doc-api:
+    type: File
+    layer: interface
+    status: draft
+    priority: supporting
+    name: "API Documentation"
+    description: "OpenAPI spec for bot runtime HTTP API"
+
+edges:
+  - from: feat-bot-runtime
+    to: feat-botcore-integration
+    relation: depends_on
+    
+  - from: feat-bot-runtime
+    to: comp-runtime-core
+    relation: depends_on
+    
+  - from: feat-bot-runtime
+    to: comp-llm-client
+    relation: depends_on
+    
+  - from: feat-dashboard
+    to: comp-user-auth
+    relation: depends_on
+    
+  - from: feat-dashboard
+    to: comp-bot-manager
+    relation: depends_on
+    
+  - from: feat-dashboard
+    to: feat-botcore-integration
+    relation: depends_on
+    
+  - from: feat-deployment
+    to: comp-deployment-manager
+    relation: depends_on
+    
+  - from: feat-deployment
+    to: feat-bot-runtime
+    relation: depends_on
+    
+  - from: feat-marketplace
+    to: feat-bot-runtime
+    relation: depends_on
+    
+  - from: comp-bot-manager
+    to: schema-database
+    relation: depends_on
+    
+  - from: comp-billing
+    to: schema-database
+    relation: depends_on
